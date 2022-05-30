@@ -1,0 +1,14 @@
+{
+  "name": "@acs_assignmment/root",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^5.0.0"
+  },
+  "workspaces": [
+    "packages/**",
+    "src/**"
+  ],
+  "dependencies": {
+    "craco": "^0.0.3"
+  }
+}
