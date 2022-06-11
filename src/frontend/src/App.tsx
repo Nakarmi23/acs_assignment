@@ -1,5 +1,7 @@
+import tw from 'twin.macro';
+
 function App() {
-  return <div className='bg-red-500'>hello</div>;
+  return <div tw='bg-red-500'>hello</div>;
 }
 
 export default App;
