@@ -1,6 +1,5 @@
-import React from 'react';
 import { Global } from '@emotion/react';
-import tw, { css, GlobalStyles as BaseStyles, globalStyles } from 'twin.macro';
+import tw, { css, globalStyles } from 'twin.macro';
 
 const customStyles = css({
   ...globalStyles,
@@ -8,6 +7,7 @@ const customStyles = css({
     ...(globalStyles.html as any),
     fontFamily: `'Inter', sans-serif`,
     fontSize: 14,
+    ...tw`text-neutral-700`,
   },
   body: {
     ...(globalStyles.body as any),
