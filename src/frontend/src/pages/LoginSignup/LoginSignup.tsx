@@ -1,10 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
-import tw from 'twin.macro';
 import { LoginForm } from '../../components/LoginForm/LoginForm';
 import { SignupForm } from '../../components/SignUpForm/SignUpForm';
-import { TextField } from '../../components/TextField/TextField';
-import { buttonStyles, outlineButtonStyles } from '../../styles/buttonStyles';
-import { textFieldStyles } from '../../styles/textFieldStyles';
+import { outlineButtonStyles } from '../../styles/buttonStyles';
 
 export const LoginSignup = () => {
   const { type = 'login' } = useParams();
