@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import tw from 'twin.macro';
+import { LoginForm } from '../../components/LoginForm/LoginForm';
+import { SignupForm } from '../../components/SignUpForm/SignUpForm';
 import { TextField } from '../../components/TextField/TextField';
 import { buttonStyles, outlineButtonStyles } from '../../styles/buttonStyles';
 import { textFieldStyles } from '../../styles/textFieldStyles';
@@ -8,10 +10,10 @@ export const LoginSignup = () => {
   const { type = 'login' } = useParams();
 
   return (
-    <div tw='flex h-screen'>
+    <div tw='flex '>
       {type === 'login' && (
-        <section tw='w-5/12 flex justify-center items-center'>
-          <div tw=' w-4/5 flex flex-col space-y-4'>
+        <section tw='h-screen flex-wrap overflow-auto w-5/12 flex justify-center items-center  p-16'>
+          <div tw=' flex flex-col space-y-4'>
             <h1 tw='text-2xl font-medium text-center'>
               Log in to Your Account
             </h1>
@@ -19,35 +21,11 @@ export const LoginSignup = () => {
               Log in to your account so you can continue building and edting
               your onboarding flows.
             </span>
-            <form tw='flex flex-col space-y-6'>
-              <TextField
-                label='Email'
-                placeholder='Enter your email address'
-                type='email'
-              />
-              <TextField
-                label='Password'
-                placeholder='Enter your password'
-                type='password'
-              />
-              <div tw='flex justify-between'>
-                <label tw='flex items-center select-none'>
-                  <input
-                    type='checkbox'
-                    tw='border-neutral-300 rounded cursor-pointer'
-                  />
-                  <span tw='text-neutral-700 ml-2 '>Remember me</span>
-                </label>
-                <button tw='text-blue-700 hover:text-blue-800'>
-                  Forgot password
-                </button>
-              </div>
-              <button css={buttonStyles}>LOG IN</button>
-            </form>
+            <LoginForm />
           </div>
         </section>
       )}
-      <section tw='w-7/12 bg-blue-700 flex flex-col items-center justify-center'>
+      <section tw='w-7/12 bg-blue-700 flex flex-col items-center justify-center h-screen flex-wrap overflow-auto'>
         <div tw='w-[500px] flex flex-col items-center justify-center space-y-5'>
           <h2 tw='text-white text-2xl font-medium text-center'>
             {type === 'signup'
@@ -69,8 +47,8 @@ export const LoginSignup = () => {
         </div>
       </section>
       {type === 'signup' && (
-        <section tw='w-5/12 flex justify-center items-center'>
-          <div tw=' w-4/5 flex flex-col space-y-4'>
+        <section tw='w-5/12 flex justify-center items-center h-screen flex-wrap overflow-auto p-16'>
+          <div tw='flex flex-col space-y-4'>
             <h1 tw='text-2xl font-medium text-center'>
               Sign Up for an Account
             </h1>
@@ -78,43 +56,7 @@ export const LoginSignup = () => {
               Let's get you all set up so you can start creating your first
               onboarding experience.
             </span>
-            <form tw='flex flex-col space-y-5'>
-              <TextField
-                label='Name'
-                placeholder='Enter full name'
-                type='text'
-              />
-              <TextField
-                label='Email'
-                placeholder='Enter your email address'
-                type='email'
-              />
-              <TextField
-                label='Password'
-                placeholder='Enter a strong password'
-                type='password'
-              />
-              <TextField
-                label='Password'
-                placeholder='Repeat your password'
-                type='password'
-              />
-              <div tw='flex justify-between'>
-                <label tw='flex items-center select-none'>
-                  <input
-                    type='checkbox'
-                    tw='border-neutral-300 rounded cursor-pointer'
-                  />
-                  <span tw='text-neutral-700 ml-2 '>
-                    I accept the{' '}
-                    <a href='#' tw='text-blue-700'>
-                      Terms & Conditions
-                    </a>
-                  </span>
-                </label>
-              </div>
-              <button css={buttonStyles}>SIGN UP</button>
-            </form>
+            <SignupForm />
           </div>
         </section>
       )}
