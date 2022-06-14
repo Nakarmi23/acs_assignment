@@ -20,7 +20,17 @@ const formSchema = yup
       .default(false)
       .isTrue('You must accept the terms and conditions'),
   })
-  .required();
+  .required()
+  .test('confirmPassword', (value, context) => {
+    console.log(value, context);
+    if (value.confirmPassword !== value.password)
+      return context.createError({
+        path: 'confirmPassword',
+        message: 'Password does not match',
+      });
+
+    return false;
+  });
 
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
@@ -28,7 +38,7 @@ export const SignupForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm<FormSchemaType>({
     defaultValues: {
       name: '',
