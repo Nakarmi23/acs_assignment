@@ -4,6 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
+import { PasswordStrengthBar } from '../PasswordStrengthBar/PasswordStrengthBar';
 import { TextField } from '../TextField/TextField';
 
 const formSchema = yup
@@ -39,6 +40,7 @@ export const SignupForm = () => {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<FormSchemaType>({
     defaultValues: {
       name: '',
@@ -101,6 +103,7 @@ export const SignupForm = () => {
           />
         )}
       />
+      <PasswordStrengthBar password={watch('password') ?? ''} />
       <Controller
         control={control}
         name='confirmPassword'
