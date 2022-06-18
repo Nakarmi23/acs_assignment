@@ -24,6 +24,11 @@ export class User {
     default: false,
   })
   termsCondition: boolean;
+
+  @Prop({
+    type: [String],
+  })
+  oldPasswords: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

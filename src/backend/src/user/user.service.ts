@@ -27,8 +27,14 @@ export class UserService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    if (updateUserDto.password)
-      updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 14);
+    if (updateUserDto.password) {
+      const oldPassword = updateUserDto.password;
+
+      updateUserDto = Object.assign(updateUserDto, {
+        password: bcrypt.hashSync(updateUserDto.password, 14),
+        $push: { oldPasswords: oldPassword },
+      });
+    }
 
     return this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true });
   }
