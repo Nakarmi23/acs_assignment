@@ -144,8 +144,6 @@ export const calculatePasswordStrength = (
       passwordRequirements.oneSpecialChar,
   };
 
-  console.log(passwordRequirements, requirements);
-
   const areAllRequirementsMet =
     Object.values(requirements).filter(Boolean).length === requirementCount;
 

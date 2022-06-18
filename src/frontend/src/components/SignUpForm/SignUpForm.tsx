@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import axios from 'axios';
 import * as _ from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -23,14 +24,13 @@ const formSchema = yup
   })
   .required()
   .test('confirmPassword', (value, context) => {
-    console.log(value, context);
     if (value.confirmPassword !== value.password)
       return context.createError({
         path: 'confirmPassword',
         message: 'Password does not match',
       });
 
-    return false;
+    return true;
   });
 
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
@@ -54,6 +54,7 @@ export const SignupForm = () => {
 
   const onSubmit = useCallback((data: FormSchemaType) => {
     console.log(data);
+    axios.post('/api/user', data);
   }, []);
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
