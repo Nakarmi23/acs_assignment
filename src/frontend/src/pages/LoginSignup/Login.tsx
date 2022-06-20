@@ -1,7 +1,6 @@
 import { memo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LoginForm } from '../../components/LoginForm/LoginForm';
-import { SignupForm } from '../../components/SignUpForm/SignUpForm';
 import { outlineButtonStyles } from '../../styles/buttonStyles';
 
 export const Login = memo(() => {

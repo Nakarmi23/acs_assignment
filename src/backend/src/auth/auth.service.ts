@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +10,7 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(email);
 
     if (user && bcrypt.compareSync(password, user.password)) {
+      // extracting password and old password from user object
       const { password, oldPasswords, ...result } = user.toObject();
       return result;
     }

@@ -1,9 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import _ from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import Reaptcha from 'reaptcha';
+import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import Reaptcha from 'reaptcha';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
 import { TextField } from '../TextField/TextField';
