@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import * as _ from 'lodash';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Reaptcha from 'reaptcha';
@@ -43,9 +43,12 @@ export const SignupForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, dirtyFields },
     watch,
     setValue,
+    setError,
+    getValues,
+    clearErrors,
   } = useForm<FormSchemaType>({
     defaultValues: {
       name: '',
@@ -68,6 +71,17 @@ export const SignupForm = () => {
   }, []);
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
+
+  // patch for confirm password not revalidating when updating password field
+  useEffect(() => {
+    if (dirtyFields.confirmPassword) {
+      if (getValues('password') !== getValues('confirmPassword')) {
+        setError('confirmPassword', { message: 'Password does not match' });
+      } else {
+        clearErrors('confirmPassword');
+      }
+    }
+  }, [watch('password')]);
 
   return (
     <form tw='flex flex-col space-y-5'>
