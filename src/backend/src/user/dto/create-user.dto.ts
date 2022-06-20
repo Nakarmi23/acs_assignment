@@ -3,4 +3,5 @@ export class CreateUserDto {
   email: string;
   password: string;
   termsCondition: boolean;
+  captcha: string;
 }

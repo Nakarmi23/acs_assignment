@@ -5,7 +5,9 @@ import {
   Param,
   Patch,
   Post,
+  UnprocessableEntityException,
 } from '@nestjs/common';
+import axios from 'axios';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
@@ -15,7 +17,23 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
+    const reCaptchaRes = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=6LdIJocgAAAAAPWNShL8hrq9noGqrwK2oy3j_1ev&response=${createUserDto.captcha}`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    );
+
+    if (reCaptchaRes.data.success !== true) {
+      throw new UnprocessableEntityException(
+        'Captcha is either expired, duplicate or invalid',
+      );
+    }
+
     return this.userService.create(createUserDto).catch((err) => {
       if (err.code === 11000) {
         throw new ConflictException({
