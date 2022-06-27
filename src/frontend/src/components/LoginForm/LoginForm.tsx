@@ -3,6 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import Reaptcha from 'reaptcha';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
@@ -23,6 +24,7 @@ const formSchema = yup
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
 export const LoginForm = () => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -40,9 +42,12 @@ export const LoginForm = () => {
 
   const onSubmit = useCallback(async (data: FormSchemaType) => {
     setManualError(null);
-    axios.post('/api/auth/login', data).catch((err: any) => {
-      setManualError(err.response.data.message);
-    });
+    axios
+      .post('/api/auth/login', data)
+      .then(() => navigate('/home'))
+      .catch((err: any) => {
+        setManualError(err.response.data.message);
+      });
   }, []);
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
@@ -108,9 +113,7 @@ export const LoginForm = () => {
         sitekey='6LdIJocgAAAAAJ6aaBxaHYKvQoydkycZmI1ffG3Y'
         onVerify={(e) => setValue('captcha', e!)}
       />
-      <button css={[buttonStyles, hasError && buttonDisabledStyles]}>
-        LOG IN
-      </button>
+      <button css={buttonStyles}>LOG IN</button>
     </form>
   );
 };

@@ -26,9 +26,10 @@ export class UserService {
     return this.userModel.findOne({ email: email.toLowerCase() });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
-      const oldPassword = updateUserDto.password;
+      const user = await this.findOne(id);
+      const oldPassword = user.password;
 
       updateUserDto = Object.assign(updateUserDto, {
         password: bcrypt.hashSync(updateUserDto.password, 14),

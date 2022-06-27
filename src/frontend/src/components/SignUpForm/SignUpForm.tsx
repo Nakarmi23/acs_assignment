@@ -59,6 +59,7 @@ export const SignupForm = () => {
     },
     resolver: yupResolver(formSchema),
   });
+
   const [manualError, setManualError] = useState<string | null>(null);
 
   const onSubmit = useCallback((data: FormSchemaType) => {

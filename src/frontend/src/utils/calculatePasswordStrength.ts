@@ -152,7 +152,7 @@ export const calculatePasswordStrength = (
   }
 
   addition.push(charNumAdd(password));
-  addition.push(getNumOfUpperCase(password) >= 1 ? upperCaseAdd(password) : 0);
+  addition.push(upperCaseAdd(password));
   addition.push(lowerCaseAdd(password));
   addition.push(numAdd(password));
   addition.push(specialCharsAdd(password));
