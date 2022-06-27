@@ -7934,10 +7934,10 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-reaptcha@^1.12.0:
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/reaptcha/-/reaptcha-1.12.0.tgz#e87b57fadcef23bbbef15dfda02bce518960cf47"
-  integrity sha512-DPwtiSry2jJIN37SBthSmgBwKMdVWJ6qZutH5EULSPe836gMmoilbacJDezoOZ5StIAj/9oShkvcl9LW6oXmWg==
+reaptcha@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/reaptcha/-/reaptcha-1.12.1.tgz#1993d2f2ed52669188f16e3210afbf89b7221211"
+  integrity sha512-zoppfGKHmo8x4PBmSrIQYQOGgVp1e8wMhr6KbwAdbQ76rSky1DcDCXLWRtBg7HGXn2hw+o+0hknafMB0rnrzZQ==
 
 rechoir@^0.6.2:
   version "0.6.2"

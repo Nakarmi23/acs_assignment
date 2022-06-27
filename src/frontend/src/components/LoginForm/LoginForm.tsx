@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import _ from 'lodash';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Reaptcha from 'reaptcha';
@@ -16,7 +16,6 @@ const formSchema = yup
       .email('Please enter a valid email. For example: foobar@gmail.com')
       .required('Email is required'),
     password: yup.string().required('Password is required'),
-    rememberMe: yup.boolean().default(false),
     captcha: yup.string().required('Captcha is required'),
   })
   .required();
@@ -25,6 +24,7 @@ type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
 export const LoginForm = () => {
   const navigate = useNavigate();
+  const capRef = useRef<Reaptcha>(null);
   const {
     control,
     handleSubmit,
@@ -34,7 +34,6 @@ export const LoginForm = () => {
     defaultValues: {
       email: '',
       password: '',
-      rememberMe: false,
     },
     resolver: yupResolver(formSchema),
   });
@@ -47,6 +46,7 @@ export const LoginForm = () => {
       .then(() => navigate('/home'))
       .catch((err: any) => {
         setManualError(err.response.data.message);
+        capRef.current?.reset();
       });
   }, []);
 
@@ -89,27 +89,11 @@ export const LoginForm = () => {
         )}
       />
       <div tw='flex justify-between'>
-        <label tw='flex items-center select-none'>
-          <Controller
-            control={control}
-            name='rememberMe'
-            render={({ field: { onChange, value, ...field } }) => (
-              <input
-                type='checkbox'
-                tw='border-neutral-300 rounded cursor-pointer'
-                {...field}
-                checked={value}
-                onChange={(e) => {
-                  onChange(e.currentTarget.checked);
-                }}
-              />
-            )}
-          />
-          <span tw='text-neutral-700 ml-2 '>Remember me</span>
-        </label>
-        <button tw='text-blue-700 hover:text-blue-800'>Forgot password</button>
+        <div></div>
+        <button tw='text-blue-700 hover:text-blue-800'>Forgot password?</button>
       </div>
       <Reaptcha
+        ref={capRef}
         sitekey='6LdIJocgAAAAAJ6aaBxaHYKvQoydkycZmI1ffG3Y'
         onVerify={(e) => setValue('captcha', e!)}
       />
