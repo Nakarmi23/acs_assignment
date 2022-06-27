@@ -44,27 +44,27 @@ export const PasswordStrengthBar = React.memo(
         <div tw='flex space-x-2'>
           <div
             css={[
-              tw`pt-0.5 bg-gray-300 flex-1 rounded`,
+              tw`flex-1 pt-1 bg-gray-300 rounded`,
               strength > 0 && color,
             ]}></div>
           <div
             css={[
-              tw`pt-0.5 bg-gray-300 flex-1 rounded`,
+              tw`flex-1 pt-1 bg-gray-300 rounded`,
               strength >= 25 && color,
             ]}></div>
           <div
             css={[
-              tw`pt-0.5 bg-gray-300 flex-1 rounded`,
+              tw`flex-1 pt-1 bg-gray-300 rounded`,
               strength >= 40 && color,
             ]}></div>
           <div
             css={[
-              tw`pt-0.5 bg-gray-300 flex-1 rounded`,
+              tw`flex-1 pt-1 bg-gray-300 rounded`,
               strength >= 65 && color,
             ]}></div>
           <div
             css={[
-              tw`pt-0.5 bg-gray-300 flex-1 rounded`,
+              tw`flex-1 pt-1 bg-gray-300 rounded`,
               strength >= 80 && color,
             ]}></div>
         </div>

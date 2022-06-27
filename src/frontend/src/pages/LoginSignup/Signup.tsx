@@ -12,8 +12,7 @@ export const Signup = memo(() => {
             Already Signed Up?
           </h2>
           <span tw='text-neutral-50 text-center block'>
-            All users on MySpace will know that there are millions of people out
-            there. Every day besides so many people joining this community
+            Log in to your account so you can continue your work.
           </span>
           <Link to='/account/login' css={outlineButtonStyles}>
             LOG IN
@@ -21,11 +20,10 @@ export const Signup = memo(() => {
         </div>
       </section>
       <section tw='w-5/12 flex justify-center items-center h-screen flex-wrap overflow-auto p-16'>
-        <div tw='flex flex-col space-y-4'>
+        <div tw='w-full flex flex-col space-y-4'>
           <h1 tw='text-2xl font-medium text-center'>Sign Up for an Account</h1>
           <span tw='text-neutral-500 text-center block mt-4'>
-            Let's get you all set up so you can start creating your first
-            onboarding experience.
+            Let's get you all set up so you can start your work.
           </span>
           <SignupForm />
         </div>

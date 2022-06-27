@@ -7,11 +7,10 @@ export const Login = memo(() => {
   return (
     <div tw='flex '>
       <section tw='h-screen flex-wrap overflow-auto w-5/12 flex justify-center items-center  p-16'>
-        <div tw=' flex flex-col space-y-4'>
+        <div tw=' flex flex-col space-y-4 w-full'>
           <h1 tw='text-2xl font-medium text-center'>Log in to Your Account</h1>
           <span tw='text-neutral-500 text-center block mt-4'>
-            Log in to your account so you can continue building and edting your
-            onboarding flows.
+            Log in to your account so you can continue your work.
           </span>
           <LoginForm />
         </div>
@@ -22,8 +21,7 @@ export const Login = memo(() => {
             Don't have an Account Yet?
           </h2>
           <span tw='text-neutral-50 text-center block'>
-            Let's get you all set up so you can start createing your first
-            onboarding experience.
+            Let's get you all set up so you can start your work.
           </span>
           <Link to='/account/signup' css={outlineButtonStyles}>
             SIGN UP
