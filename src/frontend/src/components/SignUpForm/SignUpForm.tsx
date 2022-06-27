@@ -23,7 +23,6 @@ const formSchema = yup
       .boolean()
       .default(false)
       .isTrue('You must accept the terms and conditions'),
-    captcha: yup.string().required('Captcha is required'),
   })
   .required()
   .test('confirmPassword', (value, context) => {
@@ -178,10 +177,6 @@ export const SignupForm = () => {
           </span>
         </label>
       </div>
-      <Reaptcha
-        sitekey='6LdIJocgAAAAAJ6aaBxaHYKvQoydkycZmI1ffG3Y'
-        onVerify={(e) => setValue('captcha', e!)}
-      />
       <button
         css={[buttonStyles, hasError && buttonDisabledStyles]}
         onClick={handleSubmit(onSubmit)}
