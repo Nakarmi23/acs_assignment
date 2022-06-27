@@ -29,7 +29,9 @@ export const LoginForm = () => {
     control,
     handleSubmit,
     formState: { errors },
+    resetField,
     setValue,
+    clearErrors,
   } = useForm<FormSchemaType>({
     defaultValues: {
       email: '',
@@ -47,10 +49,13 @@ export const LoginForm = () => {
       .catch((err: any) => {
         setManualError(err.response.data.message);
         capRef.current?.reset();
+        resetField('captcha');
       });
   }, []);
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
+
+  console.log(errors);
 
   return (
     <form tw='flex flex-col space-y-6' onSubmit={handleSubmit(onSubmit)}>
@@ -95,9 +100,16 @@ export const LoginForm = () => {
       <Reaptcha
         ref={capRef}
         sitekey='6LdIJocgAAAAAJ6aaBxaHYKvQoydkycZmI1ffG3Y'
-        onVerify={(e) => setValue('captcha', e!)}
+        onVerify={(e) => {
+          clearErrors('captcha');
+          setValue('captcha', e!);
+        }}
       />
-      <button css={buttonStyles}>LOG IN</button>
+      <button
+        css={[buttonStyles, hasError && buttonDisabledStyles]}
+        disabled={hasError}>
+        LOG IN
+      </button>
     </form>
   );
 };
