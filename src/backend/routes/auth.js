@@ -34,6 +34,29 @@ router.post('/login', async (req, res) => {
 
   const { password, oldPasswords, ...result } = user.toObject();
 
+  req.session.userId = user._id;
+
+  return res.json(result);
+});
+
+router.get('/profile', async (req, res) => {
+  if (!req.session?.userId)
+    return res.status(401).json({
+      statusCode: 401,
+      message: 'User not authenticated',
+    });
+
+  const user = await userModel.findById(req.session.userId);
+
+  if (!user) {
+    return res.status(401).json({
+      statusCode: 401,
+      message: 'Invalid Session',
+    });
+  }
+
+  const { password, oldPasswords, ...result } = user.toObject();
+
   return res.json(result);
 });
 
