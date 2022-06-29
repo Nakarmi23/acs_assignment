@@ -15,7 +15,7 @@ const bootstrap = async () => {
     })
     .then(() => console.log('Connected database'));
 
-  // app.set('trust proxy', 1); // trust proxy if node js is behind proxy and if secure(line 8) is true  (for this assignment i'm use a proxy to redirect the request to this backend project. CHECK "vite.config.ts")
+  // app.set('trust proxy', 1); // trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)
   app.use(
     session({
       secret: 'site secret',
@@ -23,7 +23,7 @@ const bootstrap = async () => {
       saveUninitialized: true,
       cookie: {
         maxAge: 2592000000, // 30 days in milliseconds (30 * 24 * 60 * 60 * 1000)
-        secure: false, // change this to true only in production
+        secure: false, // change this to true only if using https
       },
       store: MongoStore.create({
         mongoUrl: mongoConnectionString,
