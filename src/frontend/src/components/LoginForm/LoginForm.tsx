@@ -3,10 +3,12 @@ import axios from 'axios';
 import _ from 'lodash';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Reaptcha from 'reaptcha';
+import tw from 'twin.macro';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
+import { PrimaryButton } from '../PrimaryButton/PrimaryButton';
 import { TextField } from '../TextField/TextField';
 
 const formSchema = yup
@@ -40,8 +42,10 @@ export const LoginForm = () => {
     resolver: yupResolver(formSchema),
   });
   const [manualError, setManualError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = useCallback(async (data: FormSchemaType) => {
+    setIsLoading(true);
     setManualError(null);
     axios
       .post('/api/auth/login', data)
@@ -50,7 +54,8 @@ export const LoginForm = () => {
         setManualError(err.response.data.message);
         capRef.current?.reset();
         resetField('captcha');
-      });
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
@@ -95,7 +100,9 @@ export const LoginForm = () => {
       />
       <div tw='flex justify-between'>
         <div></div>
-        <button tw='text-blue-700 hover:text-blue-800'>Forgot password?</button>
+        <Link to='/password-reset' tw='text-blue-700 hover:text-blue-800'>
+          Forgot password?
+        </Link>
       </div>
       <Reaptcha
         ref={capRef}
@@ -105,11 +112,9 @@ export const LoginForm = () => {
           setValue('captcha', e!);
         }}
       />
-      <button
-        css={[buttonStyles, hasError && buttonDisabledStyles]}
-        disabled={hasError}>
+      <PrimaryButton disable={hasError || isLoading} isLoading={isLoading}>
         LOG IN
-      </button>
+      </PrimaryButton>
     </form>
   );
 };

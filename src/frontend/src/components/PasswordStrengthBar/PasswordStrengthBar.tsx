@@ -16,11 +16,10 @@ export const PasswordStrengthBar = React.memo(
     password,
     requirements = defaultPasswordRequirements,
   }: PasswordStrengthBarProps) => {
-    const [strength, setStrength] = React.useState(0);
-
-    useEffect(() => {
-      setStrength(calculatePasswordStrength(password, requirements));
-    }, [password]);
+    const strength = React.useMemo(
+      () => calculatePasswordStrength(password, requirements),
+      [password, requirements]
+    );
 
     const strengthName = React.useMemo(() => {
       if (strength >= 80) return 'Very Strong';

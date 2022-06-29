@@ -4,7 +4,7 @@
   "scripts": {
     "backend": "yarn workspace @acs_assignment/backend",
     "frontend": "yarn workspace @acs_assignment/frontend",
-    "dev": "concurrently --names \"backend,frontend\" \"yarn backend start:dev\" \"yarn frontend dev\""
+    "dev": "concurrently --names \"backend,frontend\" \"yarn backend dev\" \"yarn frontend dev\""
   },
   "devDependencies": {
     "concurrently": "^7.2.1",

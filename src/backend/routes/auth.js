@@ -12,7 +12,7 @@ router.post('/login', async (req, res) => {
   if (!user || !bcrypt.compareSync(body.password, user.password)) {
     return res.status(401).json({
       statusCode: 401,
-      message: 'Username or Password is invalid',
+      message: 'Email or Password is invalid',
     });
   }
 

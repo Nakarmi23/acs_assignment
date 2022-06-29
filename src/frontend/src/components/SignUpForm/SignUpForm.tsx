@@ -4,10 +4,11 @@ import * as _ from 'lodash';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import Reaptcha from 'reaptcha';
+import tw from 'twin.macro';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
 import { PasswordStrengthBar } from '../PasswordStrengthBar/PasswordStrengthBar';
+import { PrimaryButton } from '../PrimaryButton/PrimaryButton';
 import { TextField } from '../TextField/TextField';
 
 const formSchema = yup
@@ -19,10 +20,6 @@ const formSchema = yup
       .required('Email is required'),
     password: yup.string().required('Password is required'),
     confirmPassword: yup.string().required('Confirm password is required'),
-    termsCondition: yup
-      .boolean()
-      .default(false)
-      .isTrue('You must accept the terms and conditions'),
   })
   .required()
   .test('confirmPassword', (value, context) => {
@@ -42,9 +39,8 @@ export const SignupForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, dirtyFields },
+    formState: { errors, dirtyFields, isSubmitted },
     watch,
-    setValue,
     setError,
     getValues,
     clearErrors,
@@ -54,19 +50,24 @@ export const SignupForm = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      termsCondition: false,
     },
     resolver: yupResolver(formSchema),
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [manualError, setManualError] = useState<string | null>(null);
 
   const onSubmit = useCallback((data: FormSchemaType) => {
+    setIsLoading(true);
+    setManualError(null);
     axios
       .post('/api/user', data)
       .then(() => navigate('/account/login'))
       .catch((err: any) => {
         setManualError(err.response.data.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -74,7 +75,7 @@ export const SignupForm = () => {
 
   // patch for confirm password not revalidating when updating password field
   useEffect(() => {
-    if (dirtyFields.confirmPassword) {
+    if (dirtyFields.confirmPassword && isSubmitted) {
       if (getValues('password') !== getValues('confirmPassword')) {
         setError('confirmPassword', { message: 'Password does not match' });
       } else {
@@ -84,7 +85,7 @@ export const SignupForm = () => {
   }, [watch('password')]);
 
   return (
-    <form tw='flex flex-col space-y-5'>
+    <form tw='flex flex-col space-y-5' onSubmit={handleSubmit(onSubmit)}>
       {manualError && (
         <div tw='border border-red-300 rounded p-3 bg-red-100 text-red-700 font-medium'>
           {manualError}
@@ -150,39 +151,9 @@ export const SignupForm = () => {
           )}
         />
       </div>
-      <div tw='flex justify-between'>
-        <label
-          tw='flex items-center select-none'
-          title='You must accept the terms and conditions'>
-          <Controller
-            control={control}
-            name='termsCondition'
-            render={({ field: { onChange, value, ...field } }) => (
-              <input
-                type='checkbox'
-                tw='border-neutral-300 rounded cursor-pointer'
-                {...field}
-                checked={value}
-                onChange={(e) => {
-                  onChange(e.currentTarget.checked);
-                }}
-              />
-            )}
-          />
-          <span tw='text-neutral-700 ml-2 '>
-            I accept the{' '}
-            <a href='#' tw='text-blue-700'>
-              Terms & Conditions
-            </a>
-          </span>
-        </label>
-      </div>
-      <button
-        css={[buttonStyles, hasError && buttonDisabledStyles]}
-        onClick={handleSubmit(onSubmit)}
-        disabled={hasError}>
+      <PrimaryButton disable={hasError || isLoading} isLoading={isLoading}>
         SIGN UP
-      </button>
+      </PrimaryButton>
     </form>
   );
 };
