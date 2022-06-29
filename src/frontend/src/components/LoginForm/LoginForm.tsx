@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Reaptcha from 'reaptcha';
 import tw from 'twin.macro';
 import * as yup from 'yup';
+import { saveSessionUser } from '../../feature/auth/auth-slice';
+import { useAppDispatch } from '../../store';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
 import { PrimaryButton } from '../PrimaryButton/PrimaryButton';
 import { TextField } from '../TextField/TextField';
@@ -43,13 +45,19 @@ export const LoginForm = () => {
   });
   const [manualError, setManualError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const onSubmit = useCallback(async (data: FormSchemaType) => {
     setIsLoading(true);
     setManualError(null);
     axios
       .post('/api/auth/login', data)
-      .then(() => navigate('/home'))
+      .then((res) => {
+        dispatch(saveSessionUser(res.data));
+        navigate('/', {
+          replace: true,
+        });
+      })
       .catch((err: any) => {
         setManualError(err.response.data.message);
         capRef.current?.reset();

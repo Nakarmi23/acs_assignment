@@ -15,16 +15,17 @@ const bootstrap = async () => {
     })
     .then(() => console.log('Connected database'));
 
-  // app.set('trust proxy', 1); // trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)
+  // trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)
+  app.set('trust proxy', 0);
   app.use(
     session({
       secret: 'site secret',
-      resave: false,
       saveUninitialized: true,
       cookie: {
         maxAge: 2592000000, // 30 days in milliseconds (30 * 24 * 60 * 60 * 1000)
         secure: false, // change this to true only if using https
       },
+      // use mongo for storing session data
       store: MongoStore.create({
         mongoUrl: mongoConnectionString,
         dbName: mongoDBName,
