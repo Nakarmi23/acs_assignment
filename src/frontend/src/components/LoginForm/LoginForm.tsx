@@ -27,7 +27,6 @@ const formSchema = yup
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
 export const LoginForm = () => {
-  const navigate = useNavigate();
   const capRef = useRef<Reaptcha>(null);
   const {
     control,
@@ -54,9 +53,6 @@ export const LoginForm = () => {
       .post('/api/auth/login', data)
       .then((res) => {
         dispatch(saveSessionUser(res.data));
-        navigate('/', {
-          replace: true,
-        });
       })
       .catch((err: any) => {
         setManualError(err.response.data.message);

@@ -9,8 +9,10 @@ import {
   removeSessionUser,
   saveSessionUser,
 } from './feature/auth/auth-slice';
+import { ChangePassword } from './pages/ChangePassword/ChangePassword';
 import { PasswordReset } from './pages/ForgotPassword/ForgetPassword';
 import { Home } from './pages/Home/Home';
+import { Layout } from './pages/Layout/Layout';
 import { Login } from './pages/LoginSignup/Login';
 import { Signup } from './pages/LoginSignup/Signup';
 import { RootState, useAppDispatch } from './store';
@@ -37,10 +39,12 @@ function App() {
         path='/'
         element={
           <RequireAuthentication>
-            <Home />
+            <Layout />
           </RequireAuthentication>
-        }
-      />
+        }>
+        <Route index element={<Home />} />
+        <Route path='change-password' element={<ChangePassword />} />
+      </Route>
       <Route
         path='password-reset'
         element={

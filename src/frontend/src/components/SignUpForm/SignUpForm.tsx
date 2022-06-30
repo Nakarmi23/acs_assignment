@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import * as _ from 'lodash';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import Reaptcha from 'reaptcha';
 import tw from 'twin.macro';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
@@ -20,6 +21,7 @@ const formSchema = yup
       .required('Email is required'),
     password: yup.string().required('Password is required'),
     confirmPassword: yup.string().required('Confirm password is required'),
+    captcha: yup.string().required('Captcha is required'),
   })
   .required()
   .test('confirmPassword', (value, context) => {
@@ -36,6 +38,7 @@ type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
 export const SignupForm = () => {
   const navigate = useNavigate();
+  const capRef = useRef<Reaptcha>(null);
   const {
     control,
     handleSubmit,
@@ -43,7 +46,9 @@ export const SignupForm = () => {
     watch,
     setError,
     getValues,
+    setValue,
     clearErrors,
+    resetField,
   } = useForm<FormSchemaType>({
     defaultValues: {
       name: '',
@@ -61,10 +66,12 @@ export const SignupForm = () => {
     setIsLoading(true);
     setManualError(null);
     axios
-      .post('/api/user', data)
+      .post('/api/user/register', data)
       .then(() => navigate('/account/login'))
       .catch((err: any) => {
         setManualError(err.response.data.message);
+        capRef.current?.reset();
+        resetField('captcha');
       })
       .finally(() => {
         setIsLoading(false);
@@ -151,6 +158,14 @@ export const SignupForm = () => {
           )}
         />
       </div>
+      <Reaptcha
+        ref={capRef}
+        sitekey='6LdIJocgAAAAAJ6aaBxaHYKvQoydkycZmI1ffG3Y'
+        onVerify={(e) => {
+          clearErrors('captcha');
+          setValue('captcha', e!);
+        }}
+      />
       <PrimaryButton disable={hasError || isLoading} isLoading={isLoading}>
         SIGN UP
       </PrimaryButton>

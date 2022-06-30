@@ -1,10 +1,12 @@
 const { Router } = require('express');
 const userModel = require('../models/user');
 const bcrypt = require('bcrypt');
+const authenticate = require('../middleware/authenticate');
+const checkCaptcha = require('../middleware/checkCaptcha');
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/register', checkCaptcha, async (req, res) => {
   const body = req.body;
 
   const newUser = new userModel(body);
@@ -27,10 +29,9 @@ router.post('/', async (req, res) => {
     });
 });
 
-router.post('/password-reset', async (req, res) => {
+router.post('/password-reset', checkCaptcha, async (req, res) => {
+  console.time('password-reset');
   let body = req.body;
-
-  console.log(body);
 
   const user = await userModel.findOne({ email: body.email });
 
@@ -40,19 +41,29 @@ router.post('/password-reset', async (req, res) => {
       message: 'User with this email does not  exists',
     });
 
+  console.timeLog('password-reset', 'checking old pass');
   const oldPassword = user.password;
 
+  // could use <Array>.some to check for old password. But using Promise.all is faster. using <Array>.some: total time 5.965s, using Promise.all: total time 3.104s
+  // const doesMatchOldPass =
+  //   user.oldPasswords.some((oldPass) =>
+  //     bcrypt.compareSync(body.password, oldPass)
+  //   ) || bcrypt.compareSync(body.password, oldPassword);
+
   const doesMatchOldPass =
-    user.oldPasswords.some((oldPass) =>
-      bcrypt.compareSync(body.password, oldPass)
-    ) || bcrypt.compareSync(body.password, oldPassword);
+    (await Promise.all(
+      user.oldPasswords.map((oldPass) => bcrypt.compare(body.password, oldPass))
+    ).then((val) => val.some(Boolean))) ||
+    bcrypt.compareSync(body.password, oldPassword);
 
   if (doesMatchOldPass)
     return res.status(409).json({
       statusCode: 409,
       message: 'You can not use an old password',
     });
+  console.timeLog('password-reset', 'checked old pass');
 
+  console.timeLog('password-reset', 'updating user');
   body = Object.assign(body, {
     password: bcrypt.hashSync(body.password, 14),
     lastPasswordUpdateDate: new Date(),
@@ -66,9 +77,68 @@ router.post('/password-reset', async (req, res) => {
 
   await user.update(body, { new: true });
 
+  console.timeEnd('password-reset');
   return res.json({
     message: "User's password is shamefully changed",
   });
 });
+
+router.post(
+  '/change-password',
+  authenticate,
+  checkCaptcha,
+  async (req, res) => {
+    let body = req.body;
+    const user = req.user;
+
+    if (!bcrypt.compareSync(body.oldPassword, user.password)) {
+      return res.status(401).json({
+        statusCode: 401,
+        message: 'Password is invalid',
+      });
+    }
+
+    const oldPassword = user.password;
+
+    // could use <Array>.some to check for old password. But using Promise.all is faster. using <Array>.some: total time 5.965s, using Promise.all: total time 3.104s
+    // const doesMatchOldPass =
+    //   user.oldPasswords.some((oldPass) =>
+    //     bcrypt.compareSync(body.password, oldPass)
+    //   ) || bcrypt.compareSync(body.password, oldPassword);
+
+    const doesMatchOldPass =
+      (await Promise.all(
+        user.oldPasswords.map((oldPass) =>
+          bcrypt.compare(body.password, oldPass)
+        )
+      ).then((val) => val.some(Boolean))) ||
+      bcrypt.compareSync(body.password, oldPassword);
+
+    if (doesMatchOldPass)
+      return res.status(409).json({
+        statusCode: 409,
+        message: 'You can not use an old password',
+      });
+
+    body = Object.assign(body, {
+      password: bcrypt.hashSync(body.password, 14),
+      lastPasswordUpdateDate: new Date(),
+      $push: {
+        oldPasswords: {
+          $each: [oldPassword],
+          $slice: -5,
+        },
+      },
+    });
+
+    const { password, oldPasswords, ...result } = (
+      await userModel.findOneAndUpdate({ _id: user._id }, body, {
+        new: true,
+      })
+    ).toObject();
+
+    return res.json(result);
+  }
+);
 
 module.exports = router;

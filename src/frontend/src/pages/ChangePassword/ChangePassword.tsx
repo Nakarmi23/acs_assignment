@@ -11,14 +11,13 @@ import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
 import React from 'react';
 import tw from 'twin.macro';
 import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton';
+import { useAppDispatch } from '../../store';
+import { saveSessionUser } from '../../feature/auth/auth-slice';
 import Reaptcha from 'reaptcha';
 
 const formSchema = yup
   .object({
-    email: yup
-      .string()
-      .email('Please enter a valid email. For example: foobar@gmail.com')
-      .required('Email is required'),
+    oldPassword: yup.string().required('Password is required'),
     password: yup.string().required('Password is required'),
     confirmPassword: yup.string().required('Confirm password is required'),
     captcha: yup.string().required('Captcha is required'),
@@ -36,7 +35,7 @@ const formSchema = yup
 
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
-export const PasswordReset = () => {
+export const ChangePassword = () => {
   const navigate = useNavigate();
   const capRef = useRef<Reaptcha>(null);
   const {
@@ -51,12 +50,13 @@ export const PasswordReset = () => {
     resetField,
   } = useForm<FormSchemaType>({
     defaultValues: {
-      email: '',
+      oldPassword: '',
       password: '',
       confirmPassword: '',
     },
     resolver: yupResolver(formSchema),
   });
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
@@ -66,10 +66,15 @@ export const PasswordReset = () => {
     setIsLoading(true);
     setManualError(null);
     axios
-      .post('/api/user/password-reset', data)
-      .then(() => navigate('/account/login'))
+      .post('/api/user/change-password', data)
+      .then((res) => {
+        dispatch(saveSessionUser(res.data));
+        navigate('/');
+      })
       .catch((err: any) => {
         setManualError(err.response.data.message);
+        capRef.current?.reset();
+        resetField('captcha');
       })
       .finally(() => {
         setIsLoading(false);
@@ -81,8 +86,6 @@ export const PasswordReset = () => {
     if (dirtyFields.confirmPassword && isSubmitted) {
       if (getValues('password') !== getValues('confirmPassword')) {
         setError('confirmPassword', { message: 'Password does not match' });
-        capRef.current?.reset();
-        resetField('captcha');
       } else {
         clearErrors('confirmPassword');
       }
@@ -91,15 +94,8 @@ export const PasswordReset = () => {
 
   return (
     <>
-      <div tw='max-w-[400px] mx-auto mt-12'>
-        <h1 tw='text-2xl font-medium text-center'>Password Reset</h1>
-        <span tw='text-neutral-500 text-center block mt-3'>
-          Please provider your email address and new password.
-        </span>
-      </div>
-      <form
-        tw='flex flex-col space-y-5 max-w-[400px] mx-auto border p-6 rounded-lg border-neutral-300 mt-8 '
-        onSubmit={handleSubmit(onSubmit)}>
+      <h1 tw='text-2xl font-medium'>Change Password</h1>
+      <form tw='space-y-5 mt-8' onSubmit={handleSubmit(onSubmit)}>
         {manualError && (
           <div tw='border border-red-300 rounded p-3 bg-red-100 text-red-700 font-medium'>
             {manualError}
@@ -107,12 +103,12 @@ export const PasswordReset = () => {
         )}
         <Controller
           control={control}
-          name='email'
+          name='oldPassword'
           render={({ field, fieldState: { error } }) => (
             <TextField
-              label='Email'
-              placeholder='Enter your email address'
-              type='email'
+              label='Old Password'
+              placeholder='Enter your old password'
+              type='password'
               error={!!error}
               helperText={error?.message}
               {...field}
@@ -124,7 +120,7 @@ export const PasswordReset = () => {
           name='password'
           render={({ field, fieldState: { error } }) => (
             <TextField
-              label='Password'
+              label='New Password'
               placeholder='Enter a strong password'
               type='password'
               error={!!error}
@@ -159,18 +155,7 @@ export const PasswordReset = () => {
           }}
         />
         <PrimaryButton isLoading={isLoading} disable={hasError || isLoading}>
-          RESET PASSWORD
-        </PrimaryButton>
-        <div tw='flex space-x-8 items-center'>
-          <hr tw='flex-1 border-t-2' />
-          <h6>OR</h6>
-          <hr tw='flex-1 border-t-2' />
-        </div>
-        <PrimaryButton
-          onClick={() => navigate('/account/login')}
-          isLoading={isLoading}
-          disable={hasError || isLoading}>
-          LOG IN
+          Change Password
         </PrimaryButton>
       </form>
     </>

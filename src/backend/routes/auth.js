@@ -1,11 +1,13 @@
 const { Router } = require('express');
 const userModel = require('../models/user');
 const bcrypt = require('bcrypt');
-const axios = require('axios');
+const authenticate = require('../middleware/authenticate');
+const checkCaptcha = require('../middleware/checkCaptcha');
 
 const router = Router();
 
-router.post('/login', async (req, res) => {
+router.post('/login', checkCaptcha, async (req, res) => {
+  console.time('auth');
   const body = req.body;
   const user = await userModel.findOne({ email: body.email });
 
@@ -16,48 +18,28 @@ router.post('/login', async (req, res) => {
     });
   }
 
-  const reCaptchaRes = await axios.post(
-    `https://www.google.com/recaptcha/api/siteverify?secret=6LdIJocgAAAAAPWNShL8hrq9noGqrwK2oy3j_1ev&response=${body.captcha}`,
-    {},
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    }
-  );
-
-  if (reCaptchaRes.data.success !== true)
-    return res.status(422).json({
-      statusCode: 422,
-      message: 'Captcha is either expired, duplicate or invalid',
-    });
-
   const { password, oldPasswords, ...result } = user.toObject();
 
   req.session.userId = user._id;
 
+  console.timeEnd('auth');
   return res.json(result);
 });
 
-router.get('/profile', async (req, res) => {
-  if (!req.session?.userId)
-    return res.status(401).json({
-      statusCode: 401,
-      message: 'User not authenticated',
-    });
-
-  const user = await userModel.findById(req.session.userId);
-
-  if (!user) {
-    return res.status(401).json({
-      statusCode: 401,
-      message: 'Invalid Session',
-    });
-  }
-
-  const { password, oldPasswords, ...result } = user.toObject();
+router.get('/profile', authenticate, async (req, res) => {
+  const { password, oldPasswords, ...result } = req.user.toObject();
 
   return res.json(result);
+});
+
+router.post('/logout', authenticate, async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) throw err;
+
+    return res.json({
+      message: 'Successful logged out',
+    });
+  });
 });
 
 module.exports = router;

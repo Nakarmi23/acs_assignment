@@ -15,8 +15,9 @@ const bootstrap = async () => {
     })
     .then(() => console.log('Connected database'));
 
-  // trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)
-  app.set('trust proxy', 0);
+  //trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)
+  // app.set('trust proxy', 1);
+
   app.use(
     session({
       secret: 'site secret',
