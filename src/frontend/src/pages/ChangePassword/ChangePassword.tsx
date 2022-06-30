@@ -14,11 +14,18 @@ import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton';
 import { useAppDispatch } from '../../store';
 import { saveSessionUser } from '../../feature/auth/auth-slice';
 import Reaptcha from 'reaptcha';
+import passwordRegex from '../../utils/passRegex';
 
 const formSchema = yup
   .object({
     oldPassword: yup.string().required('Password is required'),
-    password: yup.string().required('Password is required'),
+    password: yup
+      .string()
+      .required('Password is required')
+      .matches(passwordRegex, {
+        message:
+          'Use 8 or more characters with a mix of uppercase and lowercase letters, numbers & symbols',
+      }),
     confirmPassword: yup.string().required('Confirm password is required'),
     captcha: yup.string().required('Captcha is required'),
   })
@@ -124,7 +131,11 @@ export const ChangePassword = () => {
               placeholder='Enter a strong password'
               type='password'
               error={!!error}
-              helperText={error?.message}
+              helperText={
+                error
+                  ? error.message
+                  : 'Use 8 or more characters with a mix of uppercase and lowercase letters, numbers & symbols'
+              }
               {...field}
             />
           )}

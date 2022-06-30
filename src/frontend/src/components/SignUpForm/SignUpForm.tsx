@@ -8,6 +8,7 @@ import Reaptcha from 'reaptcha';
 import tw from 'twin.macro';
 import * as yup from 'yup';
 import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
+import passwordRegex from '../../utils/passRegex';
 import { PasswordStrengthBar } from '../PasswordStrengthBar/PasswordStrengthBar';
 import { PrimaryButton } from '../PrimaryButton/PrimaryButton';
 import { TextField } from '../TextField/TextField';
@@ -19,7 +20,13 @@ const formSchema = yup
       .string()
       .email('Please enter a valid email. For example: foobar@gmail.com')
       .required('Email is required'),
-    password: yup.string().required('Password is required'),
+    password: yup
+      .string()
+      .required('Password is required')
+      .matches(passwordRegex, {
+        message:
+          'Use 8 or more characters with a mix of uppercase and lowercase letters, numbers & symbols',
+      }),
     confirmPassword: yup.string().required('Confirm password is required'),
     captcha: yup.string().required('Captcha is required'),
   })
@@ -136,7 +143,11 @@ export const SignupForm = () => {
             placeholder='Enter a strong password'
             type='password'
             error={!!error}
-            helperText={error?.message}
+            helperText={
+              error
+                ? error.message
+                : 'Use 8 or more characters with a mix of uppercase and lowercase letters, numbers & symbols'
+            }
             {...field}
           />
         )}

@@ -9,17 +9,23 @@ import {
 export interface PasswordStrengthBarProps {
   password: string;
   requirements?: PasswordRequirements;
+  onStrengthChange?: (strength: number) => void;
 }
 
 export const PasswordStrengthBar = React.memo(
   ({
     password,
     requirements = defaultPasswordRequirements,
+    onStrengthChange,
   }: PasswordStrengthBarProps) => {
     const strength = React.useMemo(
       () => calculatePasswordStrength(password, requirements),
       [password, requirements]
     );
+
+    useEffect(() => {
+      onStrengthChange && onStrengthChange(strength);
+    }, [strength]);
 
     const strengthName = React.useMemo(() => {
       if (strength >= 80) return 'Very Strong';
