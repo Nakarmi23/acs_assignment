@@ -13,8 +13,9 @@ export const Home = () => {
         <li>
           Frequency of Change{' '}
           <small>
-            (Recommends password change if the last password change date exceeds
-            60 or more days.)
+            (Recommends password change if the user has not changed their
+            password for 60 or more days. Please check the Readme.md file for
+            testing this feature.)
           </small>
         </li>
       </ul>

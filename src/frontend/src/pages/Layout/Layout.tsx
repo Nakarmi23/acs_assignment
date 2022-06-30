@@ -6,6 +6,7 @@ import IUser from '../../model/user';
 import { RootState, useAppDispatch } from '../../store';
 import tw, { styled } from 'twin.macro';
 import { NavLink, Outlet } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 const StyledNavLink = styled(NavLink)(() => ({
   ...tw`p-2 rounded hover:bg-neutral-100`,
@@ -26,23 +27,32 @@ export const Layout = () => {
     });
   }, []);
 
+  console.log(
+    dayjs(sessionUser.lastPasswordUpdateDate).diff(new Date(), 'days')
+  );
+
   return (
     <div tw='max-w-[600px] mx-auto mt-32 pb-32'>
       <header tw='flex justify-between items-center'>
         <h1 tw='text-2xl font-medium'>Welcome, {sessionUser.name}</h1>
       </header>
-      <div tw='border p-4 rounded-lg mt-4 border-yellow-700 bg-yellow-200 '>
-        <p tw='text-yellow-700 font-medium'>
-          It seem like you have not changed your password for quite a while. For
-          security reasons please change your password by clicking here or the
-          "Change Password" link below.
-        </p>
-      </div>
+      {/* Show alert if user has not changed their password for 60 or more days */}
+      {sessionUser.lastPasswordUpdateDate &&
+        dayjs(new Date()).diff(sessionUser.lastPasswordUpdateDate, 'days') >=
+          60 && (
+          <div tw='border p-6 rounded-lg mt-4 border-yellow-700 bg-yellow-200 '>
+            <p tw='text-yellow-700 font-medium'>
+              It seem like you have not changed your password for quite a while.
+              For security reasons please change your password by clicking here
+              or the "Change Password" link below.
+            </p>
+          </div>
+        )}
       <div tw='flex mt-4 space-x-4 items-start'>
-        <main tw='w-8/12 border p-4 rounded-lg border-neutral-300'>
+        <main tw='w-8/12 border p-6 rounded-lg border-neutral-300'>
           <Outlet />
         </main>
-        <aside tw='border p-4 rounded-lg border-neutral-300 w-4/12 space-y-1.5'>
+        <aside tw='border p-6 rounded-lg border-neutral-300 w-4/12 space-y-1.5'>
           <h6 tw='font-medium text-lg'>Links</h6>
           <nav tw='flex flex-col space-y-1.5'>
             <StyledNavLink to='/'>Home</StyledNavLink>
