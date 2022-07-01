@@ -18,6 +18,13 @@ export const Home = () => {
             <strong>Readme.md</strong> file for testing this feature.)
           </small>
         </li>
+        <li>
+          Rate Limit on all API endpoints{' '}
+          <small>
+            (Block users for 15 mins if number of requests exceeds 15 within 5
+            seconds )
+          </small>
+        </li>
       </ul>
     </>
   );

@@ -1,19 +1,15 @@
-const mongoose = require('mongoose');
+const connectDatabase = require('./db/dbConnect').default;
 const appRouter = require('./routes');
 var session = require('express-session');
 const MongoStore = require('connect-mongo');
 const { json } = require('express');
+const rateLimiterMiddleware = require('./middleware/rateLimiter');
 const app = require('express')();
 
 const bootstrap = async () => {
   const mongoConnectionString = 'mongodb://localhost:27017';
   const mongoDBName = 'acs_assignment';
-  await mongoose
-    .connect(mongoConnectionString, {
-      autoIndex: true,
-      dbName: mongoDBName,
-    })
-    .then(() => console.log('Connected database'));
+  await connectDatabase();
 
   //trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)
   // app.set('trust proxy', 1);
@@ -35,7 +31,7 @@ const bootstrap = async () => {
   );
 
   app.use(json());
-  app.use((err, req, res, next) => {
+  app.use((err, _, res, __) => {
     console.error(err);
     return res
       .status(500)

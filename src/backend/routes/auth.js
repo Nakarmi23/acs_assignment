@@ -3,10 +3,11 @@ const userModel = require('../models/user');
 const bcrypt = require('bcrypt');
 const authenticate = require('../middleware/authenticate');
 const checkCaptcha = require('../middleware/checkCaptcha');
+const rateLimitGenerator = require('../middleware/rateLimiter');
 
 const router = Router();
 
-router.post('/login', checkCaptcha, async (req, res) => {
+router.post('/login', rateLimitGenerator(), checkCaptcha, async (req, res) => {
   console.time('auth');
   const body = req.body;
   const user = await userModel.findOne({ email: body.email });
@@ -26,13 +27,13 @@ router.post('/login', checkCaptcha, async (req, res) => {
   return res.json(result);
 });
 
-router.get('/profile', authenticate, async (req, res) => {
+router.get('/profile', rateLimitGenerator(), authenticate, async (req, res) => {
   const { password, oldPasswords, ...result } = req.user.toObject();
 
   return res.json(result);
 });
 
-router.post('/logout', authenticate, async (req, res) => {
+router.post('/logout',  rateLimitGenerator(), authenticate, async (req, res) => {
   req.session.destroy((err) => {
     if (err) throw err;
 
