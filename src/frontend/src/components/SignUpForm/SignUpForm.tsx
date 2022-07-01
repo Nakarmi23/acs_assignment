@@ -62,6 +62,7 @@ export const SignupForm = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      captcha: '',
     },
     resolver: yupResolver(formSchema),
   });
@@ -79,6 +80,7 @@ export const SignupForm = () => {
         setManualError(err.response.data.message);
         capRef.current?.reset();
         resetField('captcha');
+        setValue('captcha', '');
       })
       .finally(() => {
         setIsLoading(false);

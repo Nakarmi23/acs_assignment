@@ -61,6 +61,7 @@ export const PasswordReset = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      captcha: '',
     },
     resolver: yupResolver(formSchema),
   });
@@ -90,6 +91,7 @@ export const PasswordReset = () => {
         setError('confirmPassword', { message: 'Password does not match' });
         capRef.current?.reset();
         resetField('captcha');
+        setValue('captcha', '');
       } else {
         clearErrors('confirmPassword');
       }

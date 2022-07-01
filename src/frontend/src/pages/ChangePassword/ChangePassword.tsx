@@ -60,6 +60,7 @@ export const ChangePassword = () => {
       oldPassword: '',
       password: '',
       confirmPassword: '',
+      captcha: '',
     },
     resolver: yupResolver(formSchema),
   });
@@ -82,6 +83,7 @@ export const ChangePassword = () => {
         setManualError(err.response.data.message);
         capRef.current?.reset();
         resetField('captcha');
+        setValue('captcha', '');
       })
       .finally(() => {
         setIsLoading(false);

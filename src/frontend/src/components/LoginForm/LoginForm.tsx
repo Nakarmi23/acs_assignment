@@ -39,6 +39,7 @@ export const LoginForm = () => {
     defaultValues: {
       email: '',
       password: '',
+      captcha: '',
     },
     resolver: yupResolver(formSchema),
   });
@@ -58,6 +59,7 @@ export const LoginForm = () => {
         setManualError(err.response.data.message);
         capRef.current?.reset();
         resetField('captcha');
+        setValue('captcha', '');
       })
       .finally(() => setIsLoading(false));
   }, []);

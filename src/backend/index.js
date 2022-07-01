@@ -3,7 +3,6 @@ const appRouter = require('./routes');
 var session = require('express-session');
 const MongoStore = require('connect-mongo');
 const { json } = require('express');
-const rateLimiterMiddleware = require('./middleware/rateLimiter');
 const app = require('express')();
 
 const bootstrap = async () => {
