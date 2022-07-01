@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { PasswordStrengthBar } from '../../components/PasswordStrengthBar/PasswordStrengthBar';
 import { TextField } from '../../components/TextField/TextField';
-import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
 import React from 'react';
 import tw from 'twin.macro';
 import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton';
@@ -18,7 +17,7 @@ import passwordRegex from '../../utils/passRegex';
 
 const formSchema = yup
   .object({
-    oldPassword: yup.string().required('Password is required'),
+    currentPassword: yup.string().required('Password is required'),
     password: yup
       .string()
       .required('Password is required')
@@ -57,7 +56,7 @@ export const ChangePassword = () => {
     resetField,
   } = useForm<FormSchemaType>({
     defaultValues: {
-      oldPassword: '',
+      currentPassword: '',
       password: '',
       confirmPassword: '',
       captcha: '',
@@ -112,11 +111,11 @@ export const ChangePassword = () => {
         )}
         <Controller
           control={control}
-          name='oldPassword'
+          name='currentPassword'
           render={({ field, fieldState: { error } }) => (
             <TextField
-              label='Old Password'
-              placeholder='Enter your old password'
+              label='Current Password'
+              placeholder='Enter your current password'
               type='password'
               error={!!error}
               helperText={error?.message}

@@ -105,7 +105,7 @@ router.post(
     let body = req.body;
     const user = req.user;
 
-    if (!bcrypt.compareSync(body.oldPassword, user.password)) {
+    if (!bcrypt.compareSync(body.currentPassword, user.password)) {
       return res.status(401).json({
         statusCode: 401,
         message: 'Password is invalid',
