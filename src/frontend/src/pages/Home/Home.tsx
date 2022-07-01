@@ -25,6 +25,13 @@ export const Home = () => {
             seconds )
           </small>
         </li>
+        <li>
+          Limit login attempts{' '}
+          <small>
+            (Block users for 30 mins if they fail to successfully login after 5
+            attempts within 15 mins)
+          </small>
+        </li>
       </ul>
     </>
   );

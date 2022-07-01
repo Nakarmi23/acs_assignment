@@ -15,7 +15,7 @@ const mongoDBName = 'acs_assignment';
 const loginAttemptLimitOptions = {
   storeClient: MongoClient.connect(mongoConnectionString),
   points: 5, // 5 attempts
-  duration: 15 * 60, // per 15 seconds by IP
+  duration: 15 * 60, // per 15 mins by IP
   blockDuration: 30 * 60, // block for 30 mins
   dbName: mongoDBName,
   tableName: 'rate_limit',
