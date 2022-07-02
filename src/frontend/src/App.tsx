@@ -9,13 +9,14 @@ import {
   removeSessionUser,
   saveSessionUser,
 } from './feature/auth/auth-slice';
-import { ChangePassword } from './pages/ChangePassword/ChangePassword';
-import { PasswordReset } from './pages/ForgotPassword/ForgetPassword';
-import { Home } from './pages/Home/Home';
-import { Layout } from './pages/Layout/Layout';
-import { Login } from './pages/LoginSignup/Login';
-import { Signup } from './pages/LoginSignup/Signup';
+import { ChangePassword } from './pages/Index/ChangePassword/ChangePassword';
+import { PasswordReset } from './pages/Account/ForgotPassword/ForgetPassword';
+import { Home } from './pages/Index/Home/Home';
+import { Index } from './pages/Index/Index';
 import { RootState, useAppDispatch } from './store';
+import { Login } from './pages/Account/Login/Login';
+import { Register } from './pages/Account/Register/Register';
+import { Account } from './pages/Account/Account';
 
 function App() {
   const authState = useSelector<RootState, AuthState['authState']>(
@@ -39,29 +40,22 @@ function App() {
         path='/'
         element={
           <RequireAuthentication>
-            <Layout />
+            <Index />
           </RequireAuthentication>
         }>
         <Route index element={<Home />} />
         <Route path='change-password' element={<ChangePassword />} />
       </Route>
       <Route
-        path='password-reset'
-        element={
-          <PublicRoute>
-            <PasswordReset />
-          </PublicRoute>
-        }
-      />
-      <Route
         path='account'
         element={
           <PublicRoute>
-            <Outlet />
+            <Account />
           </PublicRoute>
         }>
         <Route path='login' element={<Login />} />
-        <Route path='signup' element={<Signup />} />
+        <Route path='register' element={<Register />} />
+        <Route path='forgot-password' element={<PasswordReset />} />
         <Route index element={<Navigate to='login' />} />
         <Route path='*' element={<Navigate to='login' />} />
       </Route>

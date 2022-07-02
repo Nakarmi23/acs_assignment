@@ -1,17 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import Reaptcha from 'reaptcha';
-import tw from 'twin.macro';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
-import passwordRegex from '../../utils/passRegex';
-import { PasswordStrengthBar } from '../PasswordStrengthBar/PasswordStrengthBar';
-import { PrimaryButton } from '../PrimaryButton/PrimaryButton';
-import { TextField } from '../TextField/TextField';
+import React from 'react';
+import tw from 'twin.macro';
+import Reaptcha from 'reaptcha';
+import { TextField } from '../../../components/TextField/TextField';
+import { PasswordStrengthBar } from '../../../components/PasswordStrengthBar/PasswordStrengthBar';
+import { PrimaryButton } from '../../../components/PrimaryButton/PrimaryButton';
+import passwordRegex from '../../../utils/passRegex';
 
 const formSchema = yup
   .object({
@@ -43,7 +43,7 @@ const formSchema = yup
 
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
-export const SignupForm = () => {
+export const Register = () => {
   const navigate = useNavigate();
   const capRef = useRef<Reaptcha>(null);
   const {
@@ -101,7 +101,7 @@ export const SignupForm = () => {
   }, [watch('password')]);
 
   return (
-    <form tw='flex flex-col space-y-5' onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} tw='space-y-5 flex flex-col'>
       {manualError && (
         <div tw='border border-red-300 rounded p-3 bg-red-100 text-red-700 font-medium'>
           {manualError}
@@ -170,6 +170,12 @@ export const SignupForm = () => {
             />
           )}
         />
+      </div>
+      <div tw='flex justify-between'>
+        <div />
+        <Link to='/account/login' tw='text-blue-700 hover:text-blue-800'>
+          Already have an account?
+        </Link>
       </div>
       <Reaptcha
         ref={capRef}

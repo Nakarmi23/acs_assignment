@@ -12,10 +12,13 @@ export const sSymbols = '~!@#$%^&*()_+`-={}|:"<>?[]\\;\',./';
 
 export const getNumOfUpperCase = (password: string) =>
   password.replace(/[^A-Z]/g, '').length;
+
 export const getNumOfLowerCase = (password: string) =>
   password.replace(/[^a-z]/g, '').length;
+
 export const getNumOfNumbers = (password: string) =>
   password.replace(/[^0-9]/g, '').length;
+
 export const getNumOfSpecialChars = (password: string) =>
   password.replace(/[a-zA-Z0-9]/g, '').length;
 

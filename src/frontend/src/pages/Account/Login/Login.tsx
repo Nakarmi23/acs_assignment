@@ -1,17 +1,19 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from 'axios';
 import _ from 'lodash';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import Reaptcha from 'reaptcha';
-import tw from 'twin.macro';
 import * as yup from 'yup';
-import { saveSessionUser } from '../../feature/auth/auth-slice';
-import { useAppDispatch } from '../../store';
-import { buttonDisabledStyles, buttonStyles } from '../../styles/buttonStyles';
-import { PrimaryButton } from '../PrimaryButton/PrimaryButton';
-import { TextField } from '../TextField/TextField';
+import React from 'react';
+import tw from 'twin.macro';
+import Reaptcha from 'reaptcha';
+import { TextField } from '../../../components/TextField/TextField';
+import { PasswordStrengthBar } from '../../../components/PasswordStrengthBar/PasswordStrengthBar';
+import { PrimaryButton } from '../../../components/PrimaryButton/PrimaryButton';
+import passwordRegex from '../../../utils/passRegex';
+import { useAppDispatch } from '../../../store';
+import { saveSessionUser } from '../../../feature/auth/auth-slice';
 
 const formSchema = yup
   .object({
@@ -26,7 +28,7 @@ const formSchema = yup
 
 type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
-export const LoginForm = () => {
+export const Login = () => {
   const capRef = useRef<Reaptcha>(null);
   const {
     control,
@@ -66,10 +68,8 @@ export const LoginForm = () => {
 
   const hasError = useMemo(() => !_.isEmpty(errors), [JSON.stringify(errors)]);
 
-  console.log(errors);
-
   return (
-    <form tw='flex flex-col space-y-6' onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} tw='space-y-5 flex flex-col'>
       {manualError && (
         <div tw='border border-red-300 rounded p-3 bg-red-100 text-red-700 font-medium'>
           {manualError}
@@ -105,8 +105,12 @@ export const LoginForm = () => {
         )}
       />
       <div tw='flex justify-between'>
-        <div></div>
-        <Link to='/password-reset' tw='text-blue-700 hover:text-blue-800'>
+        <Link to='/account/register' tw='text-blue-700 hover:text-blue-800'>
+          Don't have an account?
+        </Link>
+        <Link
+          to='/account/forgot-password'
+          tw='text-blue-700 hover:text-blue-800'>
           Forgot password?
         </Link>
       </div>

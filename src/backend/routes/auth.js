@@ -36,7 +36,7 @@ router.post('/login', rateLimitGenerator(), checkCaptcha, async (req, res) => {
       if (!user || !bcrypt.compareSync(body.password, user.password)) {
         return res.status(401).json({
           statusCode: 401,
-          message: `Email or Password is invalid. Remaining attempts: ${limiter.remainingPoints}`,
+          message: `Email or Password is invalid.\nRemaining attempts: ${limiter.remainingPoints}`,
         });
       }
 

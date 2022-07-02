@@ -15,7 +15,7 @@ const StyledNavLink = styled(NavLink)(() => ({
   },
 }));
 
-export const Layout = () => {
+export const Index = () => {
   const sessionUser = useSelector<RootState, IUser>(
     (store) => store.auth.user!
   );
@@ -26,10 +26,6 @@ export const Layout = () => {
       dispatch(removeSessionUser());
     });
   }, []);
-
-  console.log(
-    dayjs(sessionUser.lastPasswordUpdateDate).diff(new Date(), 'days')
-  );
 
   return (
     <div tw='max-w-[600px] mx-auto mt-32 pb-32'>
