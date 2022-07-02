@@ -14,8 +14,7 @@ export const Home = () => {
           Frequency of Change{' '}
           <small>
             (Recommends password change if the user has not changed their
-            password for 60 or more days. Please check the{' '}
-            <strong>Readme.md</strong> file for testing this feature.)
+            password for 60 or more days.)
           </small>
         </li>
         <li>
