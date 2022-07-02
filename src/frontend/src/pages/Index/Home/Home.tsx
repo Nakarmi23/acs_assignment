@@ -31,6 +31,7 @@ export const Home = () => {
             attempts within 15 mins)
           </small>
         </li>
+        <li>Password Hashing</li>
       </ul>
     </>
   );
