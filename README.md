@@ -23,20 +23,32 @@ This project uses Lerna with Yarn Workspaces to manage and run two sub-projects 
 - Download and install [Nodejs](https://nodejs.org/en/download/).
 - Download and install [MongoDB](https://www.mongodb.com/try/download/community)
 - Install yarn
+
   ```shell
   npm i -g yarn      # You may need to use sudo if you're on Mac OS or Linux device
   ```
+
   - (Only for Windows) If an error message come up saying "The execution of scripts is disabled on this system". You may need to set the execution policy to "Unrestricted" or "RemoteSigned" on Powershell.
+
     - Open PowerShell as an Administrator
     - Run the following command to see the current execution policy
       ```shell
       Get-ExecutionPolicy       # Here you'll see 'Restricted'
       ```
     - Now run the following command to change the execution policy to "Unrestricted" or "RemoteSigned"
-      `shell Set-ExecutionPolicy Unrestricted `
+
+      ```
+      shell Set-ExecutionPolicy Unrestricted
+      ```
+
       or
-      `shell Set-ExecutionPolicy RemoteSigned `
+
+      ```shell
+       Set-ExecutionPolicy RemoteSigned
+      ```
+
       > You can learn more about "Unrestricted" and "RemoteSigned" [here](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-5.1#remotesigned).
+
 - Open terminal from the root of the project
 - Install all the dependencies
   ```shell
