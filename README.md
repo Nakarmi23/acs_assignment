@@ -77,10 +77,8 @@ This project uses Lerna with Yarn Workspaces to manage and run two sub-projects 
 
 Below is a list of all security features that are implemented in this project:
 
-- Captcha v2
+- Google reCaptcha v2
 - Password Strength indicator
-- Old password check
+- Old password check (Enforcing Password History)
 - Frequency of Change <small>(Recommends password change if the user has not changed their password for 60 or more days.)</small>
-- Rate Limit on all API endpoints <small>(Block users from sending requests for 15 mins if number of requests exceeds 15 within 5 seconds)</small>
-- Limit login attempts <small>(Block users from logging in for 30 mins if they fail to successfully login after 5 attempts within 15 mins)</small>
-- Password hashing
+- Standardize Password Length and Combinations

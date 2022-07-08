@@ -17,21 +17,8 @@ export const Home = () => {
             password for 60 or more days.)
           </small>
         </li>
-        <li>
-          Rate Limit on all API endpoints{' '}
-          <small>
-            (Block users for 15 mins if number of requests exceeds 15 within 5
-            seconds )
-          </small>
-        </li>
-        <li>
-          Limit login attempts{' '}
-          <small>
-            (Block users for 30 mins if they fail to successfully login after 5
-            attempts within 15 mins)
-          </small>
-        </li>
         <li>Password Hashing</li>
+        <li>Standardize Password Length and Combinations</li>
       </ul>
     </>
   );

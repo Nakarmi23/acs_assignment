@@ -4,7 +4,7 @@ let mongooseConnection = null;
 
 connectDatabase = async () => {
   const mongoConnectionString = 'mongodb://localhost:27017';
-  const mongoDBName = 'acs_assignment';
+  const mongoDBName = 'CET324_acs_ankit_nakarmi';
 
   mongooseConnection = await mongoose.connect(mongoConnectionString, {
     autoIndex: true,
