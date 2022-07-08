@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import tw from 'twin.macro';
 import {
   calculatePasswordStrength,
@@ -11,6 +11,39 @@ export interface PasswordStrengthBarProps {
   requirements?: PasswordRequirements;
   onStrengthChange?: (strength: number) => void;
 }
+
+const passwordStrengthLabelAndColors = {
+  //  if strength greater or equals to 80
+  gteq80: {
+    label: 'Very Strong',
+    color: tw`bg-green-700`,
+  },
+  //  if strength greater or equals to 65
+  gteq65: {
+    label: 'Strong',
+    color: tw`bg-green-700`,
+  },
+  //  if strength greater or equals to 40
+  gteq40: {
+    label: 'Good',
+    color: tw`bg-amber-700`,
+  },
+  //  if strength greater or equals to 25
+  gteq25: {
+    label: 'Weak',
+    color: tw`bg-red-500`,
+  },
+  //  if strength greater than 80
+  gt0: {
+    label: 'Very Weak',
+    color: tw`bg-red-500`,
+  },
+  //  if strength equals to 0
+  eq0: {
+    label: 'Too short',
+    color: undefined,
+  },
+};
 
 export const PasswordStrengthBar = React.memo(
   ({
@@ -27,21 +60,13 @@ export const PasswordStrengthBar = React.memo(
       onStrengthChange && onStrengthChange(strength);
     }, [strength]);
 
-    const strengthName = React.useMemo(() => {
-      if (strength >= 80) return 'Very Strong';
-      if (strength >= 65) return 'Strong';
-      if (strength >= 40) return 'Good';
-      if (strength >= 25) return 'Weak';
-      if (strength > 0) return 'Very Weak';
-      return 'Too short';
-    }, [strength]);
-
-    const color = React.useMemo(() => {
-      if (strength >= 80) return tw`bg-green-700`;
-      if (strength >= 65) return tw`bg-green-700`;
-      if (strength >= 40) return tw`bg-amber-700`;
-      if (strength >= 25) return tw`bg-red-500`;
-      if (strength > 0) return tw`bg-red-500`;
+    const { color, label } = useMemo(() => {
+      if (strength >= 80) return passwordStrengthLabelAndColors['gteq80'];
+      if (strength >= 65) return passwordStrengthLabelAndColors['gteq65'];
+      if (strength >= 40) return passwordStrengthLabelAndColors['gteq40'];
+      if (strength >= 25) return passwordStrengthLabelAndColors['gteq25'];
+      if (strength > 0) return passwordStrengthLabelAndColors['gt0'];
+      return passwordStrengthLabelAndColors['eq0'];
     }, [strength]);
 
     return (
@@ -74,7 +99,7 @@ export const PasswordStrengthBar = React.memo(
             ]}></div>
         </div>
         <div tw='text-right'>
-          <span tw='font-medium text-neutral-500'>{strengthName}</span>
+          <span tw='font-medium text-neutral-500'>{label}</span>
         </div>
       </div>
     );

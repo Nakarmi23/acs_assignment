@@ -7,7 +7,7 @@ const app = require('express')();
 
 const bootstrap = async () => {
   const mongoConnectionString = 'mongodb://localhost:27017';
-  const mongoDBName = 'acs_assignment';
+  const mongoDBName = 'CET324_acs_ankit_nakarmi';
   await connectDatabase();
 
   //trust proxy if node js is behind proxy and if secure(line 26) is true  (for this assignment i'm use a proxy to redirect the rest api requests to this backend project. CHECK "vite.config.ts"(line 29) in frontend project)

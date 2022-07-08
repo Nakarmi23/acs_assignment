@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import React from 'react';
 import tw from 'twin.macro';
-import Reaptcha from 'reaptcha';
+import Recaptcha from 'reaptcha';
 import { TextField } from '../../../components/TextField/TextField';
 import { PasswordStrengthBar } from '../../../components/PasswordStrengthBar/PasswordStrengthBar';
 import { PrimaryButton } from '../../../components/PrimaryButton/PrimaryButton';
@@ -45,7 +45,7 @@ type FormSchemaType = yup.TypeOf<typeof formSchema>;
 
 export const Register = () => {
   const navigate = useNavigate();
-  const capRef = useRef<Reaptcha>(null);
+  const capRef = useRef<Recaptcha>(null);
   const {
     control,
     handleSubmit,
@@ -177,7 +177,7 @@ export const Register = () => {
           Already have an account?
         </Link>
       </div>
-      <Reaptcha
+      <Recaptcha
         ref={capRef}
         sitekey='6LdIJocgAAAAAJ6aaBxaHYKvQoydkycZmI1ffG3Y'
         onVerify={(e) => {

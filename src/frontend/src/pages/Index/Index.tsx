@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { removeSessionUser } from '../../feature/auth/auth-slice';
 import IUser from '../../model/user';
@@ -27,23 +27,27 @@ export const Index = () => {
     });
   }, []);
 
+  const isPass60DaysOld = useMemo(
+    () =>
+      dayjs(new Date()).diff(sessionUser.lastPasswordUpdateDate, 'days') >= 60,
+    [sessionUser.lastPasswordUpdateDate]
+  );
+
   return (
     <div tw='max-w-[600px] mx-auto mt-32 pb-32'>
       <header tw='flex justify-between items-center'>
         <h1 tw='text-2xl font-medium'>Welcome, {sessionUser.name}</h1>
       </header>
       {/* Show alert if user has not changed their password for 60 or more days */}
-      {sessionUser.lastPasswordUpdateDate &&
-        dayjs(new Date()).diff(sessionUser.lastPasswordUpdateDate, 'days') >=
-          60 && (
-          <div tw='border p-6 rounded-lg mt-4 border-yellow-700 bg-yellow-200 '>
-            <p tw='text-yellow-700 font-medium'>
-              It seem like you have not changed your password for quite a while.
-              For security reasons please change your password by clicking here
-              or the "Change Password" link below.
-            </p>
-          </div>
-        )}
+      {sessionUser.lastPasswordUpdateDate && isPass60DaysOld && (
+        <div tw='border p-6 rounded-lg mt-4 border-yellow-700 bg-yellow-200 '>
+          <p tw='text-yellow-700 font-medium'>
+            It seem like you have not changed your password for quite a while.
+            For security reasons please change your password by clicking here or
+            the "Change Password" link below.
+          </p>
+        </div>
+      )}
       <div tw='flex mt-4 space-x-4 items-start'>
         <main tw='w-8/12 border p-6 rounded-lg border-neutral-300'>
           <Outlet />

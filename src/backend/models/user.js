@@ -21,7 +21,10 @@ const UserSchema = new Schema(
       maxItems: 5,
     },
 
-    lastPasswordUpdateDate: Date,
+    lastPasswordUpdateDate: {
+      type: Date,
+      default: new Date(),
+    },
   },
   {
     timestamps: true,

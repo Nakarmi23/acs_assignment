@@ -6,116 +6,6 @@ export interface PasswordRequirements {
   oneSpecialChar: boolean;
 }
 
-export const sLetters = 'abcdefghijklmnopqrstuvwxyz';
-export const sNumbers = '0123456789';
-export const sSymbols = '~!@#$%^&*()_+`-={}|:"<>?[]\\;\',./';
-
-export const getNumOfUpperCase = (password: string) =>
-  password.replace(/[^A-Z]/g, '').length;
-
-export const getNumOfLowerCase = (password: string) =>
-  password.replace(/[^a-z]/g, '').length;
-
-export const getNumOfNumbers = (password: string) =>
-  password.replace(/[^0-9]/g, '').length;
-
-export const getNumOfSpecialChars = (password: string) =>
-  password.replace(/[a-zA-Z0-9]/g, '').length;
-
-export const charNumAdd = (password: string) => password.length * 4;
-
-export const upperCaseAdd = (password: string) =>
-  (password.length - getNumOfUpperCase(password)) * 2;
-
-export const lowerCaseAdd = (password: string) =>
-  (password.length - getNumOfLowerCase(password)) * 2;
-
-export const numAdd = (password: string) => getNumOfNumbers(password) * 4;
-
-export const specialCharsAdd = (password: string) =>
-  getNumOfSpecialChars(password) * 2;
-
-export const onlyLetterDeduc = (password: string) =>
-  /[0-9]/g.test(password) ? 0 : password.length;
-
-export const onlyNumberDeduc = (password: string) =>
-  /[a-zA-Z]/g.test(password) ? 0 : password.length;
-
-export const consecutiveUpperCaseDeduc = (password: string) => {
-  let deduc = 0;
-  for (let i = 0; i < password.length - 1; i++) {
-    if (
-      i < password.length &&
-      password[i].match(/[A-Z]/) &&
-      password[i + 1].match(/[A-Z]/)
-    ) {
-      deduc += 1;
-    }
-  }
-  return deduc;
-};
-
-export const consecutiveLowerCaseDeduc = (password: string) => {
-  let deduc = 0;
-  for (let i = 0; i < password.length - 1; i++) {
-    if (
-      i < password.length &&
-      password[i].match(/[a-z]/) &&
-      password[i + 1].match(/[a-z]/)
-    ) {
-      deduc += 1;
-    }
-  }
-  return deduc * 2;
-};
-
-export const consecutiveNumberDeduc = (password: string) => {
-  let deduc = 0;
-  for (let i = 0; i < password.length - 1; i++) {
-    if (
-      i < password.length &&
-      password[i].match(/[0-9]/) &&
-      password[i + 1].match(/[0-9]/)
-    ) {
-      deduc += 1;
-    }
-  }
-  return deduc;
-};
-
-export const sequentialLetterDeduc = (password: string) => {
-  let deduc = 0;
-  for (let i = 0; i < sLetters.length - 3; i++) {
-    const s = sLetters.substring(i, i + 3);
-    if (password.indexOf(s) !== -1) {
-      deduc++;
-    }
-  }
-  return deduc * 3;
-};
-
-export const sequentialNumberDeduc = (password: string) => {
-  let deduc = 0;
-  for (let i = 0; i < sNumbers.length - 3; i++) {
-    const s = sNumbers.substring(i, i + 3);
-    if (password.indexOf(s) !== -1) {
-      deduc++;
-    }
-  }
-  return deduc * 3;
-};
-
-export const sequentialSymbolDeduc = (password: string) => {
-  let deduc = 0;
-  for (let i = 0; i < sSymbols.length - 3; i++) {
-    const s = sSymbols.substring(i, i + 3);
-    if (password.indexOf(s) !== -1) {
-      deduc++;
-    }
-  }
-  return deduc * 3;
-};
-
 export const defaultPasswordRequirements: PasswordRequirements = {
   charNum: 8,
   oneUpperCase: true,
@@ -124,56 +14,154 @@ export const defaultPasswordRequirements: PasswordRequirements = {
   oneSpecialChar: true,
 };
 
-export const calculatePasswordStrength = (
-  password: string,
-  passwordRequirements = defaultPasswordRequirements
-) => {
-  const addition = [];
-  const deduction = [];
+export const lettersSequence = 'abcdefghijklmnopqrstuvwxyz';
+export const numberSequence = '0123456789';
+export const symbolSequence = '~!@#$%^&*()_+`-={}|:"<>?[]\\;\',./';
 
-  // check if password meets requirements
+// base functions
+export const getNumOfUpperCase = (password: string) =>
+  // replace everything except UpperCase characters with empty string
+  password.replace(/[^A-Z]/g, '').length;
+
+export const getNumOfLowerCase = (password: string) =>
+  // replace everything except LowerCase characters with empty string
+  password.replace(/[^a-z]/g, '').length;
+
+export const getNumOfNumbers = (password: string) =>
+  // replace everything except numbers characters with empty string
+  password.replace(/[^0-9]/g, '').length;
+
+export const getNumOfSpecialChars = (password: string) =>
+  // replace everything except special characters with empty string
+  password.replace(/[a-zA-Z0-9]/g, '').length;
+
+// points functions for addition
+const getRequirementMetPoint = (
+  passwordRequirements: PasswordRequirements,
+  password: string
+) => {
+  // get number of requirements which are set to true or have value greater than 0
   const requirementCount =
     Object.values(passwordRequirements).filter(Boolean).length;
 
   const requirements = {
-    charNum: password.length >= passwordRequirements.charNum,
+    // only check if requirement is met if charNum in passwordRequirements is greater than 0
+    charNum:
+      passwordRequirements.charNum &&
+      password.length >= passwordRequirements.charNum,
+    // only check other requirements if oneUpperCase, oneLowerCase, oneNumber, and oneSpecialChar in variable passwordRequirements are true
     oneUpperCase:
-      getNumOfUpperCase(password) >= 1 && passwordRequirements.oneUpperCase,
+      passwordRequirements.oneUpperCase && getNumOfUpperCase(password) >= 1,
     oneLowerCase:
-      getNumOfLowerCase(password) >= 1 && passwordRequirements.oneLowerCase,
-    oneNumber: getNumOfNumbers(password) >= 1 && passwordRequirements.oneNumber,
+      passwordRequirements.oneLowerCase && getNumOfLowerCase(password) >= 1,
+    oneNumber: passwordRequirements.oneNumber && getNumOfNumbers(password) >= 1,
     oneSpecialChar:
-      getNumOfSpecialChars(password) >= 1 &&
-      passwordRequirements.oneSpecialChar,
+      passwordRequirements.oneSpecialChar &&
+      getNumOfSpecialChars(password) >= 1,
   };
 
+  // check if all requirements are met`
   const areAllRequirementsMet =
     Object.values(requirements).filter(Boolean).length === requirementCount;
 
   if (areAllRequirementsMet) {
-    addition.push(requirementCount * 2);
+    return requirementCount * 2;
   }
 
-  addition.push(charNumAdd(password));
-  addition.push(upperCaseAdd(password));
-  addition.push(lowerCaseAdd(password));
-  addition.push(numAdd(password));
-  addition.push(specialCharsAdd(password));
+  return 0;
+};
 
-  deduction.push(onlyLetterDeduc(password));
-  deduction.push(onlyNumberDeduc(password));
-  deduction.push(consecutiveUpperCaseDeduc(password));
-  deduction.push(consecutiveLowerCaseDeduc(password));
-  deduction.push(consecutiveNumberDeduc(password));
-  deduction.push(sequentialLetterDeduc(password));
-  deduction.push(sequentialNumberDeduc(password));
-  deduction.push(sequentialSymbolDeduc(password));
+export const getPassLengthPoint = (password: string) => password.length * 4;
 
-  console.log(addition, deduction);
+export const getUpperCasePoint = (password: string) =>
+  (password.length - getNumOfUpperCase(password)) * 2;
 
+export const getLowerCasePoint = (password: string) =>
+  (password.length - getNumOfLowerCase(password)) * 2;
+
+export const getNumberPoint = (password: string) =>
+  getNumOfNumbers(password) * 4;
+
+export const getSpecialCharPoint = (password: string) =>
+  getNumOfSpecialChars(password) * 2;
+
+// points functions for subtraction
+export const getOnlyLetterPenalty = (password: string) =>
+  /[0-9]/g.test(password) ? 0 : password.length;
+
+export const getOnlyNumberPenalty = (password: string) =>
+  /[a-zA-Z]/g.test(password) ? 0 : password.length;
+
+export const getConsecutivePenalty = (patten: RegExp, password: string) => {
+  let deduc = 0;
+  for (let i = 0; i < password.length - 1; i++) {
+    // check if current and next character are of the same type (number, letter or symbol)
+    if (
+      i < password.length &&
+      password[i].match(patten) &&
+      password[i + 1].match(patten)
+    ) {
+      deduc++;
+    }
+  }
+  return deduc;
+};
+
+export const getSequentialPenalty = (sequence: string, password: string) => {
+  let deduc = 0;
+  for (let i = 0; i < sequence.length - 3; i++) {
+    // Example:
+    // i = 0
+    // sequence = '01234567890'
+    // then s = '012' because s is the 3 characters from i to i+3
+
+    const s = sequence.substring(i, i + 3);
+
+    // check if s is in password
+    if (password.indexOf(s) !== -1) {
+      deduc++;
+    }
+  }
+  return deduc * 3;
+};
+
+export const calculatePasswordStrength = (
+  password: string,
+  passwordRequirements = defaultPasswordRequirements
+) => {
+  // using points to indicate the strength of the password.
+
+  // points for length, uppercase, lowercase, number, special char and if all requirements are met
+  const addition = [
+    getRequirementMetPoint(passwordRequirements, password),
+    getPassLengthPoint(password),
+    getUpperCasePoint(password),
+    getLowerCasePoint(password),
+    getNumberPoint(password),
+    getSpecialCharPoint(password),
+  ];
+
+  // Penalty points for: using only letters, using only numbers, consecutive and sequential characters, numbers and special characters
+  const penalty = [
+    getOnlyLetterPenalty(password),
+    getOnlyNumberPenalty(password),
+    // get deduction for consecutive characters, numbers, and symbols
+    getConsecutivePenalty(/[A-Z]/, password),
+    getConsecutivePenalty(/[a-z]/, password),
+    getConsecutivePenalty(/[0-9]/, password),
+    // get deduction for sequential characters, numbers, and symbols
+    getSequentialPenalty(lettersSequence, password),
+    getSequentialPenalty(numberSequence, password),
+    getSequentialPenalty(symbolSequence, password),
+  ];
+
+  // calculate total points
   const total = addition.reduce((acc, curr) => acc + curr, 0);
-  const totalDeduc = deduction.reduce((acc, curr) => acc + curr, 0);
-  const totalScore = total - totalDeduc;
+
+  // calculate total points after Penalty
+  const totalPenalty = penalty.reduce((acc, curr) => acc + curr, 0);
+
+  const totalScore = total - totalPenalty;
 
   return totalScore;
 };
